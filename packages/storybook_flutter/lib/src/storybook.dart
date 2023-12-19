@@ -34,7 +34,6 @@ class Storybook extends StatefulWidget {
     Layout initialLayout = Layout.auto,
   })  : plugins = UnmodifiableListView([
           LayoutPlugin(initialLayout),
-          const ContentsPlugin(),
           const KnobsPlugin(),
           ...plugins ?? _defaultPlugins,
         ]),

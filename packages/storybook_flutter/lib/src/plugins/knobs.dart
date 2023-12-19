@@ -29,7 +29,7 @@ Widget _buildPanel(BuildContext context) {
       context.select<StoryNotifier, String?>((it) => it.currentStoryName);
 
   return items.isEmpty
-      ? const Center(child: Text('No knobs'))
+      ? const SizedBox()
       : ListView.separated(
           key: ValueKey(currentStoryName ?? ''),
           primary: false,
