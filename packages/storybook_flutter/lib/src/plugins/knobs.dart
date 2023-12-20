@@ -22,9 +22,14 @@ Widget? _buildIcon(BuildContext context) =>
       EffectiveLayout.expanded => null,
     };
 
-Widget _buildPanel(BuildContext context) {
+List<Knob<dynamic>> knobItems(BuildContext context) {
   final knobs = context.watch<KnobsNotifier>();
   final items = knobs.all();
+  return items;
+}
+
+Widget _buildPanel(BuildContext context) {
+  final items = knobItems(context);
   final currentStoryName =
       context.select<StoryNotifier, String?>((it) => it.currentStoryName);
 
@@ -38,6 +43,35 @@ Widget _buildPanel(BuildContext context) {
           itemCount: items.length,
           itemBuilder: (context, index) => items[index].build(),
         );
+}
+
+class SidePanel extends StatefulWidget {
+  const SidePanel({super.key});
+
+  @override
+  State<SidePanel> createState() => _SidePanelState();
+}
+
+class _SidePanelState extends State<SidePanel> {
+  @override
+  Widget build(BuildContext context) => SafeArea(
+        left: false,
+        child: SizedBox(
+          width: knobItems(context).isEmpty ? 0 : 200,
+          child: Localizations(
+            delegates: const [
+              DefaultMaterialLocalizations.delegate,
+              DefaultWidgetsLocalizations.delegate,
+            ],
+            locale: const Locale('en', 'US'),
+            child: Navigator(
+              onGenerateRoute: (_) => PageRouteBuilder<void>(
+                pageBuilder: (context, _, __) => _buildPanel(context),
+              ),
+            ),
+          ),
+        ),
+      );
 }
 
 Widget _buildWrapper(BuildContext context, Widget? child) =>
@@ -58,25 +92,7 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
                           left: BorderSide(color: Colors.black12),
                         ),
                       ),
-                      child: SafeArea(
-                        left: false,
-                        child: SizedBox(
-                          width: 250,
-                          child: Localizations(
-                            delegates: const [
-                              DefaultMaterialLocalizations.delegate,
-                              DefaultWidgetsLocalizations.delegate,
-                            ],
-                            locale: const Locale('en', 'US'),
-                            child: Navigator(
-                              onGenerateRoute: (_) => PageRouteBuilder<void>(
-                                pageBuilder: (context, _, __) =>
-                                    _buildPanel(context),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      child: SidePanel(),
                     ),
                   ),
                 ),
